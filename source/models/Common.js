@@ -29,8 +29,8 @@ var BaseOptions = {
     //safe: {}, //TODO: it is important option which need to be specified carefully later.
     strict: true,
     versionKey: CommonProps.DOCUMENT_VERSION,
-    _id: true,//TODO: switch off later if user-generated id is used
-    id: true//TODO: switch off later if user-generated id is used
+    _id: false,//TODO: switch off later if user-generated id is used
+    id: false//TODO: switch off later if user-generated id is used
 };
 
 var SchemaBuilder = function(){
@@ -40,7 +40,7 @@ var SchemaBuilder = function(){
 SchemaBuilder.i = function(){
     return new SchemaBuilder();
 };
-SchemaBuilder.baseProperties = _.pick(CS, CP.DOCUMENT_VERSION);
+SchemaBuilder.baseProperties = _.pick(CS, CP.ID, CP.DOCUMENT_VERSION);
 SchemaBuilder.baseOptions = BaseOptions;
 SchemaBuilder.prototype.withBaseOptions = function(){
     _.extend(this.options, SchemaBuilder.baseOptions); //Append base options' definition

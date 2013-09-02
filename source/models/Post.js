@@ -3,12 +3,17 @@ var SchemaBuilder = require('./Common').SchemaBuilder;
 var schema = SchemaBuilder
     .i()
     .withBase()
+    .withCreatedBy()
     .withCreatedOn()
+    .withUpdatedBy()
+    .withUpdatedOn()
     .withProperties({
-        uid: String
-        , dealId: String
+
+        //long description as detailed post content
+        "content": String
+
     })
     .build();
 
 module.exports.schema = schema;
-module.exports.model = mongoose.model('UserLikedDeal', schema);
+module.exports.model = mongoose.model('Post', schema);

@@ -1,5 +1,4 @@
 module.exports = [{
-    "_id": 0,
     "_dv": 2, //document version: the record's version
 
     //main image url
@@ -30,7 +29,6 @@ module.exports = [{
         "likes": 2
     }
 }, {
-    "_id": 1,
     "_dv": 3, //document version: the record's version
 
     //main image url
@@ -60,9 +58,5 @@ module.exports = [{
     "meta": {
         "views": 20,
         "likes": 3
-    },
-    "comments": [{
-        _id: 0,
-        content: "awesome!"
-    }]
+    }
 }];
