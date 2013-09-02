@@ -12,3 +12,12 @@ logs
 results
 
 npm-debug.log
+node_modules
+
+.idea
+public/components
+public/build
+web/build
+migrations/.migrate
+
+.DS_store
