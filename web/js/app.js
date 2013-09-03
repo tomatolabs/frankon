@@ -1,4 +1,4 @@
-define( ['Bootstrap', 'Fileupload', 'Favor'], function (Bootstrap, Fileupload, App) {
-    var app = new App({});
+define( ['Bootstrap', 'Fileupload', 'BBS'], function (Bootstrap, Fileupload, bbs) {
+    var app = new bbs({});
     app.startup();
 });

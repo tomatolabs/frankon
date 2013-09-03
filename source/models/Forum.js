@@ -1,6 +1,5 @@
 var mongoose = require('../../lib/mongoose');
 var SchemaBuilder = require('./Common').SchemaBuilder;
-var Comment = require('./Comment').schema;
 var schema = SchemaBuilder
     .i()
     .withBase()
@@ -10,13 +9,15 @@ var schema = SchemaBuilder
     .withUpdatedOn()
     .withProperties({
         //short description as a title
-        "name": String//"Jawbone UP 2nd Generation - 你的生活小秘书"
+        "name": String
 
         //long description as detailed forum information
-        , "desc": String //"Jawbone UP 2nd Generation - 你的生活小秘书, Jawbone UP 2nd Generation - 你的生活小秘书"
+        , "desc": String
 
+        //sub forums of this forum
         , "children": [{type: Number, ref: 'Forum'}]
 
+        //all threads which are related to this forum
         , "threads": [{type: Number, ref: 'Thread'}]
 
     })

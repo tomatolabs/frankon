@@ -13,7 +13,7 @@ var schema = SchemaBuilder
         "title": String
 
         //original post
-        , "op": {type: Post, required: true}
+        , "op": {type: Number, ref: 'Post', required: true}
 
         , "posts": [{type: Number, ref: 'Post'}]
 
