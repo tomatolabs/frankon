@@ -1,36 +1,39 @@
-var Deal = require('../source/models/Deal').model;
 var mongoose = require('../lib/mongoose');
+var Forum = require('../source/models/Forum').model;
 var logger = require('../lib/logging').logger;
-var list = require('./mocks/deals');
+var list = require('./mocks/forums');
 
-exports.setUp = function(done){
-    done();
-};
-exports.tearDown = function(done){
-    mongoose.disconnect(function(err){
-        if(err) {
-            logger.error(err);
-            return;
-        }
-        logger.info('mongoose is disconnected');
-    });
-    done();
-};
-exports.testAddDeal = function(test){
+exports.testMaintainForum = function(test){
     var length = list.length;
-    test.equals(length, 2);
     for(var i=0; i<length; i++){
         var item = list[i];
-        logger.info( 'index ' + i + ' : ' +JSON.stringify(item) );
-        var deal = new Deal(item);
-        deal.save(function(err){
+        Forum.findById(item._id, function(err, doc){
             if(err){
-                logger.error('Fail to save deal: '+err);
+                logger.error('Fail to find document: '+err);
+                return;
+            }
+            if(!doc){
+                logger.info( 'index ' + i + ' : ' +JSON.stringify(item) );
+                var instance = new Forum(item);
+                instance.save(function(err){
+                    if(err){
+                        logger.error('Fail to save document: '+err);
+                        return;
+                    }
+                    logger.debug('document is saved: '+raw);
+                });
             }
             else{
-                logger.info('succeed to save deal ' + deal.sDesc);
+                Forum.update({_id: item._id}, {name: 'forum updated'}, function(err, num, raw){
+                    if(err){
+                        logger.error('Fail to update document: '+err);
+                        return;
+                    }
+                    logger.debug('document is updated: '+JSON.stringify(raw));
+                });
             }
         });
+
     }
     test.done();
 };

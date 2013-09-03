@@ -3,22 +3,8 @@ var mongoose = require('../lib/mongoose');
 var logger = require('../lib/logging').logger;
 var list = require('./mocks/users');
 
-exports.setUp = function(done){
-    done();
-};
-exports.tearDown = function(done){
-    mongoose.disconnect(function(err){
-        if(err) {
-            logger.error(err);
-            return;
-        }
-        logger.info('mongoose is disconnected');
-    });
-    done();
-};
 exports.testAddUser = function(test){
     var length = list.length;
-    test.equals(length, 2);
     for(var i=0; i<length; i++){
         var item = list[i];
         logger.info( 'index ' + i + ' : ' +JSON.stringify(item) );
@@ -32,5 +18,16 @@ exports.testAddUser = function(test){
             }
         });
     }
+    test.done();
+};
+exports.testLoadUser = function(test){
+    User.find({'_id': 0}, function(err, docs){
+        if(err){
+            logger.error('Fail to find: '+err);
+            return;
+        }
+        test.equals(docs.length, 0);
+        test.equals(docs[0].username, 'henryleu');
+    });
     test.done();
 };
