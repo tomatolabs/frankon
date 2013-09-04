@@ -160,6 +160,7 @@ define(['Underscore', 'Backbone', 'jQuery', 'JST'], function(_, bb, $, JST) {
         },
         renderChildren: function(){
             _.each(this.children, function(view, id) {
+                view.$el.attr('data-view-id', id);
                 this.$('[data-view-id="' + id + '"]').replaceWith(view.el);
             }, this);
         },

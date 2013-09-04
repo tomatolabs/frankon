@@ -3,7 +3,7 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
         routes: {
             "bbs-forums": "bbsForums",
             "bbsm-forums": "bbsmForums",
-            "*view(/:id)": "switchView", //   /bbs
+            //"*view(/:id)": "switchView", //   /bbs
             "bbs": "bbs",
             "bbsm": "bbsm",
             "home": "home"
@@ -24,15 +24,6 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
             this.models['bbs'].forums = forumTopList;
 
             this.models['bbsm'] = {forums: null };
-            var forumTopList2 = new ForumList({});
-            forumTopList2.fetch({
-                success: function(o){
-                    forumTopList2.fetched = true;
-                },
-                failure: function(o){
-                    console.error('failure: '+o);
-                }
-            });
             this.models['bbsm'].forums = forumTopList;
             this.configureViews();
         },
@@ -55,7 +46,7 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
                 console.log('viewName - ' + viewName);
                 var viewAction = this.routes[viewName];
                 if(viewName.indexOf('-')==-1){
-                    this[viewAction](viewAction, id);
+                    //this[viewAction](viewAction, id);
                 }
                 $('li>a[set]').parent().removeClass('active');
                 $('li>a[set="'+viewName+'"]').parent().addClass('active');
@@ -66,41 +57,34 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
         home: function(viewName){
         },
         bbs: function(viewName){
-            this.ensureTopView('bbs').show().toForumList();
+            var me = this;
+            var showView = function(){
+                me.switchView('bbs');
+                me.ensureBbsView('bbs').show().toForumList();
+            };
+            this.ensureModelFetched('bbs', 'forums', showView);
         },
         bbsm: function(viewName){
-            this.ensureTopView('bbsm').show().toForumList();
+            var me = this;
+            var showView = function(){
+                me.switchView('bbsm');
+                me.ensureBbsmView('bbsm').show().toForumList();
+            };
+            this.ensureModelFetched('bbsm', 'forums', showView);
         },
         bbsForums: function(viewName){
             var me = this;
             var showView = function(){
                 me.switchView('bbs');
-                me.ensureTopView('bbs').show().toForumList();
+                me.ensureBbsView('bbs').show().toForumList();
             };
             this.ensureModelFetched('bbs', 'forums', showView);
-/*
-            var bbs = this.models['bbs'];
-            if(bbs.forums.fetched){
-                this.switchView('bbs');
-                this.ensureTopView('bbs').show().toForumList();
-            }
-            else{
-                var me = this;
-                bbs.forums.fetch({
-                    success: function(){
-                        bbs.forums.fetched = true;
-                        me.switchView('bbs');
-                        me.ensureTopView('bbs').show().toForumList();
-                    }
-                });
-            }
-*/
         },
         bbsmForums: function(viewName){
             var me = this;
             var showView = function(){
                 me.switchView('bbsm');
-                me.ensureTopView('bbsm').show().toForumList();
+                me.ensureBbsmView('bbsm').show().toForumList();
             };
             this.ensureModelFetched('bbsm', 'forums', showView);
         },
@@ -119,10 +103,20 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
                 });
             }
         },
-        ensureTopView: function(viewName){
+        ensureBbsView: function(viewName){
             var view = this.views[viewName];
             if(!view){
-                view = new BbsView({spa: this, model:this.models[viewName], modelDriven: false});
+                view = new BbsMainView({spa: this, model:this.models[viewName], modelDriven: false});
+                this.views[viewName] = view;
+                var content = '[set="'+viewName+'"].view';
+                $(content).html( view.el );
+            }
+            return view;
+        },
+        ensureBbsmView: function(viewName){
+            var view = this.views[viewName];
+            if(!view){
+                view = new BbsmMainView({spa: this, model:this.models[viewName], modelDriven: false});
                 this.views[viewName] = view;
                 var content = '[set="'+viewName+'"].view';
                 $(content).html( view.el );
@@ -142,7 +136,7 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
         }
     });
 
-    var BbsView = spa.View.extend({
+    var BbsMainView = spa.View.extend({
         templateName: 'bbs-main',
         hidden: false,
         prerendered: true,
@@ -151,7 +145,7 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
         },
         configure: function(){
             this.forumListView = new ForumListView({
-                vid: 'forum-list',
+                vid: 'bbs-forums',
                 spa: this.spa,
                 prerendered: true,
                 model: this.model.forums
@@ -175,16 +169,16 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
         }
     });
 
-    var BbsmView = spa.View.extend({
-        templateName: 'bbs-main',
+    var BbsmMainView = spa.View.extend({
+        templateName: 'bbsm-main',
         hidden: false,
         prerendered: true,
         events: {
             'mouseup [href="bbsm-forums"]': 'toForumList'
         },
         configure: function(){
-            this.forumListView = new ForumListView({
-                vid: 'forum-list',
+            this.forumListView = new BbsmForumListView({
+                vid: 'bbsm-forums',
                 spa: this.spa,
                 prerendered: true,
                 model: this.model.forums
@@ -224,7 +218,39 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
     });
 
     var ForumListView = spa.View.extend({
-        templateName: 'forum-list'
+        templateName: 'bbs-forums'
     });
+
+    var BbsmForumListView = spa.View.extend({
+        templateName: 'bbsm-forums',
+        events: {
+            'mouseup #addForumBtn': 'clickAddForum',
+            'mouseup #saveForumBtn': 'clickSaveForum',
+            'mouseup #closeAddForumBtn': 'clickCloseAddForum'
+        },
+        clickAddForum: function(e){
+            var btn = $('#addForumBtn');
+            if(btn.prop('disabled')){
+                btn.prop('disabled', false);
+            }
+            else{
+                var panel = $('#addForumPanel');
+                panel.show();
+                btn.prop('disabled', true);
+            }
+        },
+        clickSaveForum: function(e){
+            $('#addForumBtn').prop('disabled', false);
+            var panel = $('#addForumPanel');
+            panel.hide();
+        },
+        clickCloseAddForum: function(e){
+            $('#addForumBtn').prop('disabled', false);
+            var panel = $('#addForumPanel');
+            panel.hide();
+        }
+
+    });
+
     return BBS;
 });
