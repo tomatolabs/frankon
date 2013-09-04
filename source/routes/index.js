@@ -19,7 +19,17 @@ module.exports = function(app) {
         util.apply(input, req.asset || {});
         res.render('index', input);
     });
-    app.get('/forums-top', function(req, res) {
+    app.get('/bbsm', function(req, res) {
+        var input = {};
+        util.apply(input, req.asset || {});
+        res.render('index', input);
+    });
+    app.get('/bbs-forums', function(req, res) {
+        var input = {};
+        util.apply(input, req.asset || {});
+        res.render('index', input);
+    });
+    app.get('/bbsm-forums', function(req, res) {
         var input = {};
         util.apply(input, req.asset || {});
         res.render('index', input);

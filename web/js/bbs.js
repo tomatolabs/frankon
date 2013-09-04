@@ -1,9 +1,11 @@
 define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
     var BBS = spa.extend({
         routes: {
-            "forums-top": "forums",
+            "bbs-forums": "bbsForums",
+            "bbsm-forums": "bbsmForums",
             "*view(/:id)": "switchView", //   /bbs
             "bbs": "bbs",
+            "bbsm": "bbsm",
             "home": "home"
         },
         root: '/',
@@ -20,6 +22,18 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
                 }
             });
             this.models['bbs'].forums = forumTopList;
+
+            this.models['bbsm'] = {forums: null };
+            var forumTopList2 = new ForumList({});
+            forumTopList2.fetch({
+                success: function(o){
+                    forumTopList2.fetched = true;
+                },
+                failure: function(o){
+                    console.error('failure: '+o);
+                }
+            });
+            this.models['bbsm'].forums = forumTopList;
             this.configureViews();
         },
         switchView: function(view, id){
@@ -54,7 +68,17 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
         bbs: function(viewName){
             this.ensureTopView('bbs').show().toForumList();
         },
-        forums: function(viewName){
+        bbsm: function(viewName){
+            this.ensureTopView('bbsm').show().toForumList();
+        },
+        bbsForums: function(viewName){
+            var me = this;
+            var showView = function(){
+                me.switchView('bbs');
+                me.ensureTopView('bbs').show().toForumList();
+            };
+            this.ensureModelFetched('bbs', 'forums', showView);
+/*
             var bbs = this.models['bbs'];
             if(bbs.forums.fetched){
                 this.switchView('bbs');
@@ -67,6 +91,30 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
                         bbs.forums.fetched = true;
                         me.switchView('bbs');
                         me.ensureTopView('bbs').show().toForumList();
+                    }
+                });
+            }
+*/
+        },
+        bbsmForums: function(viewName){
+            var me = this;
+            var showView = function(){
+                me.switchView('bbsm');
+                me.ensureTopView('bbsm').show().toForumList();
+            };
+            this.ensureModelFetched('bbsm', 'forums', showView);
+        },
+        ensureModelFetched: function(module, model, cb){
+            var mdl = this.models[module][model];
+            if(mdl.fetched){
+                cb();
+            }
+            else{
+                var me = this;
+                mdl.fetch({
+                    success: function(){
+                        mdl.fetched = true;
+                        cb();
                     }
                 });
             }
@@ -99,7 +147,40 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
         hidden: false,
         prerendered: true,
         events: {
-            'mouseup [href="forums-top"]': 'toForumList'
+            'mouseup [href="bbs-forums"]': 'toForumList'
+        },
+        configure: function(){
+            this.forumListView = new ForumListView({
+                vid: 'forum-list',
+                spa: this.spa,
+                prerendered: true,
+                model: this.model.forums
+            });
+            this.addChild(this.forumListView);
+        },
+        afterRender: function(){
+        },
+        afterRenderChildren: function(){
+        },
+        switchView: function(view){
+            _.each(this.children, function(v, id){
+                v.hide();
+            });
+            //alert(view.model.fetched);
+            view.doRender();
+            view.show();
+        },
+        toForumList: function(){
+            this.switchView(this.forumListView);
+        }
+    });
+
+    var BbsmView = spa.View.extend({
+        templateName: 'bbs-main',
+        hidden: false,
+        prerendered: true,
+        events: {
+            'mouseup [href="bbsm-forums"]': 'toForumList'
         },
         configure: function(){
             this.forumListView = new ForumListView({
