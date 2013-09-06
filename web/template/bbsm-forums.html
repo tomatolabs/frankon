@@ -9,13 +9,13 @@
                 <div class="prompt">论坛名称</div>
             </div>
             <div class="span8">
-                <input type="text" name="name">
+                <input type="text" name="name" id="forumName">
             </div>
             <div class="span4">
                 <div class="prompt">论坛描述</div>
             </div>
             <div class="span8">
-                <textarea name="desc"></textarea>
+                <textarea name="desc" id="forumDesc" ></textarea>
             </div>
         </div>
         <div class="row-fluid">
@@ -30,6 +30,7 @@
 </div>
 
 <div class="row-fluid vp1">&nbsp;</div>
+        <div id="forum_items">
 <ul>
 <% _.each(input, function(item, index) { %>
     <li class="forum">
@@ -43,3 +44,4 @@
     </li>
 <% }); %>
 </ul>
+        </div>

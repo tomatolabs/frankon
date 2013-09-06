@@ -13,7 +13,7 @@ exports.testMaintainForum = function(test){
                 return;
             }
             if(!doc){
-                logger.info( 'index ' + i + ' : ' +JSON.stringify(item) );
+                logger.info( 'Forum-index ' + i + ' : ' +JSON.stringify(item) );
                 var instance = new Forum(item);
                 instance.save(function(err){
                     if(err){

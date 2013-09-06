@@ -184,6 +184,7 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
                 model: this.model.forums
             });
             this.addChild(this.forumListView);
+
         },
         afterRender: function(){
         },
@@ -206,14 +207,13 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
         idAttribute: '_id',
         urlRoot: '/forum',
         defaults: {
-            '_id': 0,
-            'name': '',
-            'desc': ''
+            'name': 'unknown',
+            'desc': 'unknown'
         }
     });
 
     var ForumList = spa.Collection.extend({
-        model: Forum,
+        model: Forum ,
         url: '/forums'
     });
 
@@ -240,6 +240,14 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
             }
         },
         clickSaveForum: function(e){
+            var name = $("#forumName").val();
+            var desc = $("#forumDesc").val();
+//            alert(JOSN.stringify(name,desc));
+            var forumModel = new Forum({
+                name: name,
+                desc: desc
+            });
+            forumModel.save();
             $('#addForumBtn').prop('disabled', false);
             var panel = $('#addForumPanel');
             panel.hide();

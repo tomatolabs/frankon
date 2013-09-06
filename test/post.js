@@ -7,11 +7,11 @@ exports.testAddPost = function(test){
     var length = list.length;
     for(var i=0; i<length; i++){
         var item = list[i];
-        logger.info( 'index ' + i + ' : ' +JSON.stringify(item) );
+        logger.info( 'Post-index ' + i + ' : ' +JSON.stringify(item) );
         var instance = new Post(item);
         instance.save(function(err){
             if(err){
-                logger.error('Fail to save document: '+err);
+                logger.error('Fail to save post: '+err);
                 return;
             }
         });
