@@ -206,9 +206,10 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
         idAttribute: '_id',
         urlRoot: '/forum',
         defaults: {
-            '_id': 0,
             'name': '',
             'desc': ''
+        },
+        initialize: function(){
         }
     });
 
@@ -222,11 +223,18 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
     });
 
     var BbsmForumListView = spa.View.extend({
+
         templateName: 'bbsm-forums',
         events: {
             'mouseup #addForumBtn': 'clickAddForum',
             'mouseup #saveForumBtn': 'clickSaveForum',
             'mouseup #closeAddForumBtn': 'clickCloseAddForum'
+        },
+        configure: function() {
+            this.listenTo(this.model, 'add', this.onAddForum);
+        },
+        onAddForum: function(model, collection, options){
+             console.log(model);
         },
         clickAddForum: function(e){
             var btn = $('#addForumBtn');
@@ -243,6 +251,19 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
             $('#addForumBtn').prop('disabled', false);
             var panel = $('#addForumPanel');
             panel.hide();
+            var new_name = $('#name').val();
+            var new_desc = $('#desc').val();
+            //console.log( 'the new forum { name:' + new_name + ', desc:' + new_desc + '}');
+            var newforum = new Forum({name: new_name,desc: new_desc});
+            //alert(newforum.url());
+            //console.log(JSON.stringify(newforum));
+            this.syncMethod = 'create';
+            var me = this;
+            newforum.save({
+                success: function(){
+                    me.add(newforum);
+                }
+            });
         },
         clickCloseAddForum: function(e){
             $('#addForumBtn').prop('disabled', false);
