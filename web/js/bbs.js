@@ -242,7 +242,6 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
         clickSaveForum: function(e){
             var name = $("#forumName").val();
             var desc = $("#forumDesc").val();
-//            alert(JOSN.stringify(name,desc));
             var forumModel = new Forum({
                 name: name,
                 desc: desc
