@@ -212,12 +212,13 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
         },
         validate :function(data){
             if(data.name==''){
-
-                $('#errorWarn').html('论坛名称不能为空！');
+                $('#forumName').addClass('error');
+                $('#nameError').html('论坛名称不能为空！');
                 return '论坛名称为空';
             };
             if(data.desc==''){
-                $('#errorWarn').html('论坛描述不能为空！');
+                $('#forumDesc').addClass('error');
+                $('#descError').html('论坛描述不能为空！');
                 return '论坛描述为空';
             };
             return false;
@@ -253,6 +254,7 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
 
         clickDelForum:function(e){
             var id = $('#oper-del').prop('name');
+            alert($('#oper-del').prop('href')+"  *****");
             var delModel = this.model.get(id);
             delModel.destroy();
             this.model.remove(delModel);
