@@ -254,8 +254,19 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
             var new_name = $('#name').val();
             var new_desc = $('#desc').val();
             var newforum = new Forum({name: new_name,desc: new_desc});
-            newforum.save();
-            this.model.add(newforum);
+            var me = this;
+            newforum.save({}, {
+                success: function (model) {
+                    console.log("save forum successful.");
+                    me.model.add(model);
+                },
+                error: function (model, response) {
+                    console.log("save forum failing.");
+                    console.log(JSON.stringify(model));
+                    console.log(response);
+                }
+            });
+//            this.model.add(newforum);
 
         },
         clickCloseAddForum: function(e){
