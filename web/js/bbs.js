@@ -248,17 +248,17 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
             }
         },
         clickSaveForum: function(e){
-            $('#addForumBtn').prop('disabled', false);
-            var panel = $('#addForumPanel');
-            panel.hide();
             var new_name = $('#name').val();
             var new_desc = $('#desc').val();
             var newforum = new Forum({name: new_name,desc: new_desc});
             var me = this;
             newforum.save({}, {
                 success: function (model) {
-                    console.log("save forum successful.");
+                    console.log("save forum successfully.");
                     me.model.add(model);
+                    $('#addForumBtn').prop('disabled', false);
+                    var panel = $('#addForumPanel');
+                    panel.hide();
                 },
                 error: function (model, response) {
                     console.log("save forum failing.");
@@ -266,8 +266,6 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
                     console.log(response);
                 }
             });
-//            this.model.add(newforum);
-
         },
         clickCloseAddForum: function(e){
             $('#addForumBtn').prop('disabled', false);
