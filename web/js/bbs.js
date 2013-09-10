@@ -221,6 +221,7 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
                 return '论坛描述为空';
             };
             return false;
+
         }
 
     });
@@ -235,6 +236,7 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
     });
 
     var BbsmForumListView = spa.View.extend({
+
         templateName: 'bbsm-forums',
         events: {
             'mouseup #addForumBtn': 'clickAddForum',
@@ -255,6 +257,12 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
             delModel.destroy();
             this.model.remove(delModel);
         },
+        configure: function() {
+            var me = this;
+            this.listenTo(this.model, 'all', function(model, collection, options){
+               me.doRender();
+            });
+        },
         clickAddForum: function(e){
             var btn = $('#addForumBtn');
             if(btn.prop('disabled')){
@@ -268,18 +276,11 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
         },
 
         clickSaveForum: function(e){
+            var new_name = $('#name').val();
+            var new_desc = $('#desc').val();
+            var newforum = new Forum({name: new_name,desc: new_desc});
             var me = this;
-            var name = $("#forumName").val();
-            var desc = $("#forumDesc").val();
-            var forumModel = new Forum({
-                name: name,
-                desc: desc
-            });
-//            forumModel.on('error', function(model, error) {
-//                console.log('#######');
-//                console.log(error+'@@@@@@@');
-//            });
-            forumModel.save(null,{
+            newforum.save(null,{
                 success : function(model){
                     me.model.fetch({
                         success: function(){

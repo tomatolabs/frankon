@@ -35,23 +35,7 @@ module.exports = function(app) {
         util.apply(input, req.asset || {});
         res.render('index', input);
     });
-    app.post('/forum', function(req, res) {
-//        logger(req.body+'#######');
-        var forumJson = JSON.parse(JSON.stringify(req.body));
-        var forum = new Forum();
-        forum._id = idGen('Forum');
-        forum.name = forumJson.name;
-        forum.desc = forumJson.desc;
-        forum.save(function(err, result){
-            if(err){
-                logger.error(err);
-                res.json(500, forum.toObject());
-            }
-            res.json(200, forum.toObject());
-        });
-        logger.debug(forumJson);
 
-    });
     app.delete('/forum/:id', function(req, res) {
         Forum.remove({'_id': req.params.id}, function(err) {
             if (err) {
@@ -74,4 +58,25 @@ module.exports = function(app) {
             res.json(200, docs);
         })
     });
+
+    app.post('/forum', function(req, res){
+        var forum = JSON.parse(JSON.stringify(req.body));
+        logger.debug('*****'+forum);
+        var newforum = new Forum();
+        newforum._id = idGen('Forum');
+        newforum.desc = forum.desc;
+        newforum.name = forum.name;
+        newforum.save(function(err, forum) {
+            if (err) {
+                logger.error(err);
+                res.json(500, err);
+                return;
+            }
+            logger.debug('Created forum: ' + forum._id);
+            logger.debug(forum);
+            res.json(200, forum);
+        });
+
+    });
+
 };

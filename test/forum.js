@@ -33,7 +33,13 @@ exports.testMaintainForum = function(test){
                 });
             }
         });
-
     }
+
+ /*   var forum1 = new Forum({_id: 1, name: "ffg", desc: "rrv"});
+    forum1.save(function(err){
+        console.log(JSON.stringify(forum1));
+
+    });
+ */
     test.done();
 };
