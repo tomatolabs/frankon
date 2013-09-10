@@ -5,6 +5,7 @@
 <div id="addForumPanel" class="row-fluid hide">
     <div class="span6 container-fluid panel">
         <div class="row-fluid">
+            <div id="errorWarn" style="color: #088"></div>
             <div class="span4">
                 <div class="prompt">论坛名称</div>
             </div>
@@ -40,7 +41,10 @@
         </a>
         <ul class="inline text-center">
             <li><i class="icon-user"> <%=item.crtBy%></i></li>
+            <li><a href="#" id="oper-del" name="<%=item._id%>">删除</a></li>
+            <li>&nbsp;&nbsp;</li>
         </ul>
+
     </li>
 <% }); %>
 </ul>

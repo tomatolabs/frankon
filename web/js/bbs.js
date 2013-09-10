@@ -209,7 +209,20 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
         defaults: {
             'name': 'unknown',
             'desc': 'unknown'
+        },
+        validate :function(data){
+            if(data.name==''){
+
+                $('#errorWarn').html('论坛名称不能为空！');
+                return '论坛名称为空';
+            };
+            if(data.desc==''){
+                $('#errorWarn').html('论坛描述不能为空！');
+                return '论坛描述为空';
+            };
+            return false;
         }
+
     });
 
     var ForumList = spa.Collection.extend({
@@ -226,7 +239,21 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
         events: {
             'mouseup #addForumBtn': 'clickAddForum',
             'mouseup #saveForumBtn': 'clickSaveForum',
-            'mouseup #closeAddForumBtn': 'clickCloseAddForum'
+            'mouseup #closeAddForumBtn': 'clickCloseAddForum',
+            'mouseup #oper-del': 'clickDelForum'
+        },
+        configure :function(){
+            var me = this;
+            this.listenTo(this.model,'all',function(model, res, options){
+                me.doRender();
+            })
+        },
+
+        clickDelForum:function(e){
+            var id = $('#oper-del').prop('name');
+            var delModel = this.model.get(id);
+            delModel.destroy();
+            this.model.remove(delModel);
         },
         clickAddForum: function(e){
             var btn = $('#addForumBtn');
@@ -239,24 +266,43 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
                 btn.prop('disabled', true);
             }
         },
+
         clickSaveForum: function(e){
+            var me = this;
             var name = $("#forumName").val();
             var desc = $("#forumDesc").val();
             var forumModel = new Forum({
                 name: name,
                 desc: desc
             });
-            forumModel.save();
-            $('#addForumBtn').prop('disabled', false);
-            var panel = $('#addForumPanel');
-            panel.hide();
+//            forumModel.on('error', function(model, error) {
+//                console.log('#######');
+//                console.log(error+'@@@@@@@');
+//            });
+            forumModel.save(null,{
+                success : function(model){
+                    me.model.fetch({
+                        success: function(){
+                            $('#addForumBtn').prop('disabled', false);
+                            var panel = $('#addForumPanel');
+                            panel.hide();
+                        },
+                        error: function(){
+                            alert('Fail to fetch forum list');
+                        }
+                    });
+                },
+                error : function(){
+                    console.log('Fail to save forum ');
+                }
+            });
+
         },
         clickCloseAddForum: function(e){
             $('#addForumBtn').prop('disabled', false);
             var panel = $('#addForumPanel');
             panel.hide();
         }
-
     });
 
     return BBS;
