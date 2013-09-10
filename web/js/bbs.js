@@ -209,7 +209,8 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
             'name': '',
             'desc': ''
         },
-        initialize: function(){
+        configure: function(){
+
         }
     });
 
