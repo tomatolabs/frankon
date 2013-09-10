@@ -5,17 +5,27 @@
 <div id="addForumPanel" class="row-fluid hide">
     <div class="span6 container-fluid panel">
         <div class="row-fluid">
-            <div class="span4">
-                <div class="prompt">论坛名称</div>
+            <div id="forumName" class="control-group">
+                <label class="control-label">论坛名称</label>
+            <!--<div class="span4">-->
+                <!--<div class="prompt">论坛名称</div>-->
+            <!--</div>-->
+                <div class="controls">
+            <!--<div class="span6">-->
+                    <input type="text" id="name" name="name" placeholder="名称···">
+                    <span class="help-inline" id="nameError"></span>
+                </div>
             </div>
-            <div class="span8">
-                <input type="text" id="name" name="name">
-            </div>
-            <div class="span4">
-                <div class="prompt">论坛描述</div>
-            </div>
-            <div class="span8">
-                <textarea id="desc" name="desc"></textarea>
+            <div id="forumDesc" class="control-group">
+                <label class="control-label">论坛描述</label>
+            <!--<div class="span4">-->
+                <!--<div class="prompt">论坛描述</div>-->
+            <!--</div>-->
+                <div class="controls">
+            <!--<div class="span6">-->
+                    <textarea id="desc" name="desc" placeholder="描述···"></textarea>
+                    <span class="help-inline" id="descError"></span>
+                </div>
             </div>
         </div>
         <div class="row-fluid">

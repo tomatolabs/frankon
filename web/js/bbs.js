@@ -209,7 +209,8 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
             'name': '',
             'desc': ''
         },
-        initialize: function(){
+        configure: function(){
+
         }
     });
 
@@ -266,8 +267,6 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
                     console.log(response);
                 }
             });
-//            this.model.add(newforum);
-
         },
         clickCloseAddForum: function(e){
             $('#addForumBtn').prop('disabled', false);
