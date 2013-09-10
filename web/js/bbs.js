@@ -210,7 +210,6 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
             'name': 'unknown',
             'desc': 'unknown'
         },
-<<<<<<< HEAD
         validate :function(data){
             if(data.name==''){
                 $('#forumName').addClass('error');
@@ -223,12 +222,7 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
                 return '论坛描述为空';
             };
             return false;
-=======
-        configure: function(){
->>>>>>> ritchieyan
-
         }
-
     });
 
     var ForumList = spa.Collection.extend({
@@ -286,20 +280,6 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
             var new_desc = $('#desc').val();
             var newforum = new Forum({name: new_name,desc: new_desc});
             var me = this;
-<<<<<<< HEAD
-            newforum.save(null,{
-                success : function(model){
-                    me.model.fetch({
-                        success: function(){
-                            $('#addForumBtn').prop('disabled', false);
-                            var panel = $('#addForumPanel');
-                            panel.hide();
-                        },
-                        error: function(){
-                            alert('Fail to fetch forum list');
-                        }
-                    });
-=======
             newforum.save({}, {
                 success: function (model) {
                     console.log("save forum successfully.");
@@ -307,16 +287,11 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
                     $('#addForumBtn').prop('disabled', false);
                     var panel = $('#addForumPanel');
                     panel.hide();
->>>>>>> ritchieyan
                 },
                 error : function(){
                     console.log('Fail to save forum ');
                 }
             });
-<<<<<<< HEAD
-
-=======
->>>>>>> ritchieyan
         },
         clickCloseAddForum: function(e){
             $('#addForumBtn').prop('disabled', false);
