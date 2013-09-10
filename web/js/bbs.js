@@ -256,6 +256,7 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
             var newforum = new Forum({name: new_name,desc: new_desc});
             newforum.save();
             this.model.add(newforum);
+
         },
         clickCloseAddForum: function(e){
             $('#addForumBtn').prop('disabled', false);
