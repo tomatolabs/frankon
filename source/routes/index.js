@@ -79,4 +79,29 @@ module.exports = function(app) {
 
     });
 
+    app.put('/forum/:id', function(req, res){
+        var updateforum = JSON.parse(JSON.stringify(req.body));
+//        logger.debug('*****'+JSON.stringify(forum));
+//        logger.debug('*****' + updateforum._id);
+        Forum.findOne({'_id': updateforum._id}, function(err, oldForum) {
+            if (err) {
+                logger.error(err);
+                res.json(500, err);
+                return;
+            }
+            oldForum.name = updateforum.name;
+            oldForum.desc = updateforum.desc;
+            oldForum.save(function(err, forum){
+                if (err) {
+                    logger.error(err);
+                    res.json(500, err);
+                    return;
+                }
+                logger.debug('Updated forum: ' + forum._id);
+                logger.debug(forum);
+                res.json(200, forum);
+            });
+        });
+    });
+
 };

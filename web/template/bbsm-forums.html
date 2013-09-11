@@ -1,4 +1,4 @@
-<div class="row-fluid">
+<div class="row-fluid" xmlns="http://www.w3.org/1999/html">
     <button id="addForumBtn" class="btn btn-primary">添加论坛</button>
 </div>
 
@@ -7,22 +7,14 @@
         <div class="row-fluid">
             <div id="forumName" class="control-group">
                 <label class="control-label">论坛名称</label>
-                <!--<div class="span4">-->
-                <!--<div class="prompt">论坛名称</div>-->
-                <!--</div>-->
                 <div class="controls">
-                    <!--<div class="span6">-->
                     <input type="text" id="name" name="name" placeholder="名称···" class="error">
                     <span class="help-inline" id="nameError"></span>
                 </div>
             </div>
             <div id="forumDesc" class="control-group">
                 <label class="control-label">论坛描述</label>
-                <!--<div class="span4">-->
-                <!--<div class="prompt">论坛描述</div>-->
-                <!--</div>-->
                 <div class="controls">
-                    <!--<div class="span6">-->
                     <textarea id="desc" name="desc" placeholder="描述···"></textarea>
                     <span class="help-inline" id="descError"></span>
                 </div>
@@ -50,9 +42,42 @@
         <ul class="inline text-center">
             <li><i class="icon-user"> <%=item.crtBy%></i></li>
             <li>&nbsp;&nbsp;</li>
-            <li><a href="/forum/<%=item._id%>" class="oper-del" name="<%=item._id%>" >删除</a></li>
-            <li><a href="/forum/<%=item._id%>" class="oper-mod" name="<%=item._id%>" >修改</a></li>
+            <li><a href="/forum/<%=item._id%>" class="oper-del" name="<%=item._id%>">删除</a></li>
+            <li>&nbsp;</li>
+            <li><a href="javascript:;" class="oper-mod" name="<%=item._id%>">编辑</a></li>
         </ul>
     </li>
     <% }); %>
 </ul>
+
+<div id="modifyForumPanel" class="row-fluid hide">
+    <div class="span3 container-fluid panel">
+        <div class="row-fluid">
+            <div id="forumName_mod" class="control-group">
+                <label class="control-label">论坛名称</label>
+                <div class="controls">
+                    <input type="text" id="name_mod" name="name_mod">
+                    <!--<span class="help-inline" id="nameError"></span>-->
+                </div>
+            </div>
+            <div id="forumDesc_mod" class="control-group">
+                <label class="control-label">论坛描述</label>
+                <div class="controls">
+                    <textarea id="desc_mod" name="desc_mod"></textarea>
+                    <!--<span class="help-inline" id="descError"></span>-->
+                </div>
+            </div>
+            <div id="hide-forum_id" class="control-group hide">
+                 <input type="hidden" id="forum_id" name="forum_id">
+            </div>
+        </div>
+        <div class="row-fluid">
+        </div>
+        <div class="row-fluid">
+            <div class="pull-right">
+                <button id="updateForumBtn" class="btn btn-primary">更新</button>
+                <button id="closemodifyForumBtn" class="btn">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
