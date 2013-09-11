@@ -241,7 +241,8 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
             'mouseup #addForumBtn': 'clickAddForum',
             'mouseup #saveForumBtn': 'clickSaveForum',
             'mouseup #closeAddForumBtn': 'clickCloseAddForum',
-            'mouseup .oper-del': 'clickDelForum'
+            'mouseup .oper-del': 'clickDelForum',
+            'mouseup .oper-mod': 'clickModForum'
         },
         configure :function(){
             var me = this;
@@ -260,6 +261,14 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
                 delModel.destroy();
                 this.model.remove(delModel);
             }
+        },
+        clickModForum:function(e){
+            var id = $(e.target).prop('name');
+            var delModel = this.model.get(id);
+//            if(confirm('确认删除？')){
+//                delModel.destroy();
+//                this.model.remove(delModel);
+//            }
         },
         clickAddForum: function(e){
             var btn = $('#addForumBtn');
