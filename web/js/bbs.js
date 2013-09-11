@@ -256,8 +256,10 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
         clickDelForum:function(e){
             var id = $(e.target).prop('name');
             var delModel = this.model.get(id);
-            delModel.destroy();
-            this.model.remove(delModel);
+            if(confirm('确认删除？')){
+                delModel.destroy();
+                this.model.remove(delModel);
+            }
         },
         clickAddForum: function(e){
             var btn = $('#addForumBtn');
