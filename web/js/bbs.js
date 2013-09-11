@@ -241,15 +241,15 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
             'mouseup #addForumBtn': 'clickAddForum',
             'mouseup #saveForumBtn': 'clickSaveForum',
             'mouseup #closeAddForumBtn': 'clickCloseAddForum',
-            'mouseup #oper-del': 'clickDelForum'
+            'mouseup #oper-del': 'clickDelForum',
+            'mouseup .oper-mod': 'clickModForum'
         },
         configure :function(){
             var me = this;
-            this.listenTo(this.model,'all',function(model, res, options){
+            this.listenTo(this.model,'add',function(model, res, options){
                 me.doRender();
             })
         },
-
         clickDelForum:function(e){
             var id = $('#oper-del').prop('name');
             alert($('#oper-del').prop('href')+"  *****");
@@ -257,11 +257,8 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
             delModel.destroy();
             this.model.remove(delModel);
         },
-        configure: function() {
-            var me = this;
-            this.listenTo(this.model, 'all', function(model, collection, options){
-               me.doRender();
-            });
+        clickModForum:function(e){
+            alert($(e.target).attr('name'));
         },
         clickAddForum: function(e){
             var btn = $('#addForumBtn');
