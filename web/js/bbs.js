@@ -262,8 +262,6 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
                 me.doRender();
             })
         },
-<<<<<<< HEAD
-
         blurForumName:function(e){
             if($(e.target).val().trim()==''){
                 $('#forumName').addClass('error');
@@ -284,8 +282,6 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
             $('#forumDesc').removeClass('error');
             $('#descError').html(null);
         },
-=======
->>>>>>> master
         clickDelForum:function(e){
             var id = $(e.target).prop('name');
             var delModel = this.model.get(id);
