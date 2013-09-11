@@ -241,27 +241,23 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
             'mouseup #addForumBtn': 'clickAddForum',
             'mouseup #saveForumBtn': 'clickSaveForum',
             'mouseup #closeAddForumBtn': 'clickCloseAddForum',
-            'mouseup #oper-del': 'clickDelForum'
+            'mouseup .oper-del': 'clickDelForum'
         },
         configure :function(){
             var me = this;
-            this.listenTo(this.model,'all',function(model, res, options){
+            this.listenTo(this.model,'add',function(model, res, options){
+                me.doRender();
+            }),
+            this.listenTo(this.model,'destroy',function(model, res, options){
                 me.doRender();
             })
         },
 
         clickDelForum:function(e){
-            var id = $('#oper-del').prop('name');
-            alert($('#oper-del').prop('href')+"  *****");
+            var id = $(e.target).prop('name');
             var delModel = this.model.get(id);
             delModel.destroy();
             this.model.remove(delModel);
-        },
-        configure: function() {
-            var me = this;
-            this.listenTo(this.model, 'all', function(model, collection, options){
-               me.doRender();
-            });
         },
         clickAddForum: function(e){
             var btn = $('#addForumBtn');

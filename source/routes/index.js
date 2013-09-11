@@ -43,7 +43,7 @@ module.exports = function(app) {
                 res.json(500, err);
                 return;
             }
-            logger.debug('Deleted deal: ' + req.params.id);
+            logger.debug('Deleted forum: ' + req.params.id);
             res.json(200, {'_id': req.params.id});
         })
     });
