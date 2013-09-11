@@ -242,7 +242,11 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
             'mouseup #saveForumBtn': 'clickSaveForum',
             'mouseup #closeAddForumBtn': 'clickCloseAddForum',
             'mouseup .oper-del': 'clickDelForum',
-            'mouseup .oper-mod': 'clickModForum'
+            'mouseup .oper-mod': 'clickModForum',
+            'focus #name': 'focusOnForumName',
+            'focus #desc': 'focusOnForumDesc',
+            'blur #name': 'blurForumName',
+            'blur #desc': 'blurForumDesc'
         },
         configure :function(){
             var me = this;
@@ -254,6 +258,26 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
             })
         },
 
+        blurForumName:function(e){
+            if($(e.target).val().trim()==''){
+                $('#forumName').addClass('error');
+                $('#nameError').html('论坛名称不能为空！');
+            };
+        },
+        blurForumDesc:function(e){
+            if($(e.target).val().trim()==''){
+                $('#forumDesc').addClass('error');
+                $('#descError').html('论坛描述不能为空！');
+            };
+        },
+        focusOnForumName:function(e){
+            $('#forumName').removeClass('error');
+            $('#nameError').html(null);
+        },
+        focusOnForumDesc:function(e){
+            $('#forumDesc').removeClass('error');
+            $('#descError').html(null);
+        },
         clickDelForum:function(e){
             var id = $(e.target).prop('name');
             var delModel = this.model.get(id);
@@ -261,14 +285,6 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
                 delModel.destroy();
                 this.model.remove(delModel);
             }
-        },
-        clickModForum:function(e){
-            var id = $(e.target).prop('name');
-            var delModel = this.model.get(id);
-//            if(confirm('确认删除？')){
-//                delModel.destroy();
-//                this.model.remove(delModel);
-//            }
         },
         clickAddForum: function(e){
             var btn = $('#addForumBtn');
