@@ -257,7 +257,14 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
             this.listenTo(this.model,'change',function(model, res, options){
                 me.doRender();
             })
-
+        },
+        clickDelForum:function(e){
+            var id = $(e.target).prop('name');
+            var delModel = this.model.get(id);
+            if(confirm('确认删除？')){
+                delModel.destroy();
+                this.model.remove(delModel);
+            }
         },
         clickAddForum: function(e){
             var btn = $('#addForumBtn');
@@ -292,12 +299,6 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
             $('#addForumBtn').prop('disabled', false);
             var panel = $('#addForumPanel');
             panel.hide();
-        },
-        clickDelForum:function(e){
-            var id = $(e.target).prop('name');
-            var delModel = this.model.get(id);
-            delModel.destroy();
-            this.model.remove(delModel);
         },
         clickUpdateForum: function(e){
             var update_name = $('#name_mod').val();
