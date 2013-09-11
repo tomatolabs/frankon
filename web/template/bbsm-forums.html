@@ -42,15 +42,15 @@
         <ul class="inline text-center">
             <li><i class="icon-user"> <%=item.crtBy%></i></li>
             <li>&nbsp;&nbsp;</li>
-            <!--<li><a href="/forum/<%=item._id%>" id="oper-del" name="<%=item._id%>">删除</a></li>-->
+            <li><a href="/forum/<%=item._id%>" class="oper-del" name="<%=item._id%>">删除</a></li>
             <li>&nbsp;</li>
-            <li><a href="javascript:;" id="<%=item._id%>" class="oper-mod" name="<%=item._id%>_modify">编辑</a></li>
+            <li><a href="javascript:;" class="oper-mod" name="<%=item._id%>">编辑</a></li>
         </ul>
     </li>
     <% }); %>
 </ul>
 
-<div id="modifyForumPanel" class="row-fluid hidden">
+<div id="modifyForumPanel" class="row-fluid hide">
     <div class="span3 container-fluid panel">
         <div class="row-fluid">
             <div id="forumName_mod" class="control-group">
@@ -66,6 +66,9 @@
                     <textarea id="desc_mod" name="desc_mod"></textarea>
                     <!--<span class="help-inline" id="descError"></span>-->
                 </div>
+            </div>
+            <div id="hide-forum_id" class="control-group hide">
+                 <input type="hidden" id="forum_id" name="forum_id">
             </div>
         </div>
         <div class="row-fluid">

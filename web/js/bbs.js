@@ -240,25 +240,24 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
         events: {
             'mouseup #addForumBtn': 'clickAddForum',
             'mouseup #saveForumBtn': 'clickSaveForum',
+            'mouseup #updateForumBtn': 'clickUpdateForum',
             'mouseup #closeAddForumBtn': 'clickCloseAddForum',
-            'mouseup #oper-del': 'clickDelForum',
+            'mouseup #closemodifyForumBtn': 'clickCloseModifyForum',
+            'mouseup .oper-del': 'clickDelForum',
             'mouseup .oper-mod': 'clickModForum'
         },
         configure :function(){
             var me = this;
             this.listenTo(this.model,'add',function(model, res, options){
                 me.doRender();
+            }),
+            this.listenTo(this.model,'destroy',function(model, res, options){
+                me.doRender();
+            }),
+            this.listenTo(this.model,'change',function(model, res, options){
+                me.doRender();
             })
-        },
-        clickDelForum:function(e){
-            var id = $('#oper-del').prop('name');
-            alert($('#oper-del').prop('href')+"  *****");
-            var delModel = this.model.get(id);
-            delModel.destroy();
-            this.model.remove(delModel);
-        },
-        clickModForum:function(e){
-            alert($(e.target).attr('name'));
+
         },
         clickAddForum: function(e){
             var btn = $('#addForumBtn');
@@ -271,7 +270,6 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
                 btn.prop('disabled', true);
             }
         },
-
         clickSaveForum: function(e){
             var new_name = $('#name').val();
             var new_desc = $('#desc').val();
@@ -293,6 +291,48 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
         clickCloseAddForum: function(e){
             $('#addForumBtn').prop('disabled', false);
             var panel = $('#addForumPanel');
+            panel.hide();
+        },
+        clickDelForum:function(e){
+            var id = $(e.target).prop('name');
+            var delModel = this.model.get(id);
+            delModel.destroy();
+            this.model.remove(delModel);
+        },
+        clickUpdateForum: function(e){
+            var update_name = $('#name_mod').val();
+            var update_desc = $('#desc_mod').val();
+            var _id = $('#forum_id').val();
+            var updateModel = this.model.get(_id);
+            updateModel.set('name', update_name);
+            updateModel.set('desc', update_desc);
+            updateModel.save({},{
+                success: function (model) {
+                    console.log("update forum successfully.");
+                    $('#updateForumBtn').prop('disabled', false);
+                    var panel = $('#modifyForumPanel');
+                    panel.hide();
+                },
+                error : function(){
+                    console.log('Fail to update forum ');
+                }
+            });
+        },
+        clickModForum:function(e){
+            var offset = $(e.target).offset();
+            $('#modifyForumPanel').show();
+            $('#modifyForumPanel').css("position","absolute");
+            $('#modifyForumPanel').css("top",offset.top - 15);
+            $('#modifyForumPanel').css("left",offset.left + 45);
+            var id = $(e.target).attr('name');
+            var oldModel = this.model.get(id);
+            $('#name_mod').val(oldModel.get('name'));
+            $('#desc_mod').val(oldModel.get('desc'));
+            $('#forum_id').val(id);
+        },
+        clickCloseModifyForum: function(e){
+            $('#updateForumBtn').prop('disabled', false);
+            var panel = $('#modifyForumPanel');
             panel.hide();
         }
     });
