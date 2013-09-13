@@ -66,6 +66,8 @@ module.exports = function(app) {
         newforum._id = idGen('Forum');
         newforum.desc = forum.desc;
         newforum.name = forum.name;
+        newforum.crtBy = req.user.id;
+        newforum.crtOn = Date.now();
         newforum.save(function(err, forum) {
             if (err) {
                 logger.error(err);
@@ -91,6 +93,7 @@ module.exports = function(app) {
             }
             oldForum.name = updateforum.name;
             oldForum.desc = updateforum.desc;
+            logger.debug('*****'+JSON.stringify(oldForum));
             oldForum.save(function(err, forum){
                 if (err) {
                     logger.error(err);

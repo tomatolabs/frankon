@@ -331,6 +331,7 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
             var updateModel = this.model.get(_id);
             updateModel.set('name', update_name);
             updateModel.set('desc', update_desc);
+            console.log(JSON.stringify(updateModel));
             updateModel.save({},{
                 success: function (model) {
                     console.log("update forum successfully.");
