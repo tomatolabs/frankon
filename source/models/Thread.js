@@ -12,6 +12,9 @@ var schema = SchemaBuilder
         //short description as a title
         "title": String
 
+        //which forum it belongs to
+        , "forum": {type: Number, ref: 'Forum', required: true}
+
         //original post
         , "op": {type: Number, ref: 'Post', required: true}
 

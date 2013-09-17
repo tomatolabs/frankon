@@ -66,6 +66,8 @@ module.exports = function(app) {
         newforum._id = idGen('Forum');
         newforum.desc = forum.desc;
         newforum.name = forum.name;
+        newforum.crtBy = req.user.id;
+        newforum.crtOn = Date.now();
         newforum.save(function(err, forum) {
             if (err) {
                 logger.error(err);
@@ -91,6 +93,7 @@ module.exports = function(app) {
             }
             oldForum.name = updateforum.name;
             oldForum.desc = updateforum.desc;
+            logger.debug('*****'+JSON.stringify(oldForum));
             oldForum.save(function(err, forum){
                 if (err) {
                     logger.error(err);
@@ -104,4 +107,15 @@ module.exports = function(app) {
         });
     });
 
+    app.get('/threads', function(req, res) {
+        var id = req.query.forumId;
+        Forum.find({forum: id}).sort({'updOn': -1}).limit(100).exec(function(err, docs) {
+            if (err) {
+                logger.error(err);
+                res.json(500, err);
+                return;
+            }
+            res.json(200, docs);
+        })
+    });
 };
