@@ -3,7 +3,6 @@ var util = require('../../lib/util');
 var redis = require('../../lib/redis');
 var Forum = require('../models/Forum').model;
 var idGen = require('../../lib/id');
-
 module.exports = function(app) {
     app.get('/', function(req, res) {
         var input = {};
@@ -46,6 +45,7 @@ module.exports = function(app) {
             logger.debug('Deleted forum: ' + req.params.id);
             res.json(200, {'_id': req.params.id});
         })
+
     });
     app.get('/forums', function(req, res) {
 
