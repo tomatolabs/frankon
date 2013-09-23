@@ -2,4 +2,6 @@
 @import url('../../public/components/bootstrap-tl/tl/css/bootstrap-responsive.css');
 @import url('../../public/components/font-awesome/css/font-awesome.css');
 @import url('../../public/components/jquery-file-upload/css/jquery.fileupload-ui.css');
+@import url('../../public/components/bootstrap-wysiwyg/index.css');
+@import url('../../public/components/bootstrap-wysiwyg/external/google-code-prettify/prettify.css');
 @import url('./style.css');

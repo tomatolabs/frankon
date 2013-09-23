@@ -89,6 +89,8 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
                     model.fetched = true;
                     me.ensureBbsForumView().doRender();
                     me.ensureBbsMainView('bbs').toThreadList();
+                    $('#forumID').val(id);
+//                    console.log(id);
                 },
                 failure: function(o){
                     console.error('failure: '+o);
@@ -360,6 +362,7 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
             newforum.save({}, {
                 success: function (model) {
                     console.log("save forum successfully.");
+                    console.log(JSON.stringify(me.model));
                     me.model.add(model);
                     $('#addForumBtn').prop('disabled', false);
                     var panel = $('#addForumPanel');
@@ -429,32 +432,60 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
         url: '/threads'
     });
 
+    var Post = spa.Model.extend({
+        idAttribute: '_id',
+        urlRoot: '/post',
+        defaults: {
+        },
+        validate :function(data){
+            return false;
+        }
+    });
+
     var ThreadListView = spa.View.extend({
         templateName: 'bbs-threads',
         events: {
-//            'mouseup #addForumBtn': 'clickAddForum',
-//            'mouseup #saveForumBtn': 'clickSaveForum',
-//            'mouseup #updateForumBtn': 'clickUpdateForum',
-//            'mouseup #closeAddForumBtn': 'clickCloseAddForum',
-//            'mouseup #closemodifyForumBtn': 'clickCloseModifyForum',
-//            'mouseup .oper-del': 'clickDelForum',
-//            'mouseup .oper-mod': 'clickModForum',
-//            'focus #name': 'focusOnForumName',
-//            'focus #desc': 'focusOnForumDesc',
-//            'blur #name': 'blurForumName',
-//            'blur #desc': 'blurForumDesc'
+            'mouseup #addThreadBtn': 'clickAddThread',
+            'mouseup #closeThreadbtn': 'clickCloseThread',
+            'mouseup #saveThreadBtn': 'saveThread'
         },
         configure :function(){
-//            var me = this;
-//            this.listenTo(this.model,'add',function(model, res, options){
-//                me.doRender();
-//            }),
-//                this.listenTo(this.model,'destroy',function(model, res, options){
-//                    me.doRender();
-//                }),
-//                this.listenTo(this.model,'change',function(model, res, options){
-//                    me.doRender();
-//                })
+        },
+        clickAddThread: function(){
+           $("#addTreadPanel").show();
+
+        },
+        clickCloseThread: function(){
+           $("#addTreadPanel").hide();
+        },
+        saveThread: function(){
+            var threadTitle = $('#title').val();
+            var postContent = $('#content').val();
+            var forumID = $('#forumID').val();
+            var post = new Post({content: postContent});
+            var me = this;
+            post.save({}, {
+                success: function (model) {
+                    console.log("save origin post successfully.");
+                    var thread = new Thread({title: threadTitle, forum: forumID, op: model.get('_id')});
+//                    console.log(JSON.stringify(thread));
+//                    thread.save();
+                    thread.save({}, {
+                        success: function(model){
+//                            console.log(JSON.stringify(me.model));
+                            console.log(JSON.stringify(model));
+                            console.log("save thread successfully.");
+                        },
+                        error: function(model){
+                            console.log('Fail to save thread ');
+                        }
+                    });
+                },
+                error : function(){
+                    console.log('Fail to save origin post ');
+                }
+            });
+            $("#addTreadPanel").hide();
         }
     });
     return BBS;
