@@ -17,6 +17,15 @@ require.config({
         'jquery.ui.widget': {
             deps: ['jQuery']
         },
+        'bootstrap-wysiwyg': {
+            deps: ['jQuery', 'Bootstrap']
+        },
+        'jquery.hotkeys': {
+            deps: ['jQuery']
+        },
+        'prettify': {
+            deps: ['Bootstrap']
+        },
         'Fileupload': {
             deps: ['jQuery', 'jquery.ui.widget']
         },
@@ -31,6 +40,9 @@ require.config({
         requireLib : '../../public/components/requirejs/require',
         jQuery: '../../public/components/jquery/jquery',
         Underscore: '../../public/components/underscore/underscore',
+        'bootstrap-wysiwyg': '../../public/components/bootstrap-wysiwyg/bootstrap-wysiwyg',
+        'jquery.hotkeys': '../../public/components/bootstrap-wysiwyg/external/jquery.hotkeys',
+        prettify: '../../public/components/bootstrap-wysiwyg/external/google-code-prettify/prettify',
         Backbone: '../../public/components/backbone/backbone',
         Bootstrap: '../../public/components/bootstrap-tl/tl/js/bootstrap',
         'jquery.ui.widget':  '../../public/components/jquery-file-upload/js/vendor/jquery.ui.widget',
