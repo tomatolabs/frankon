@@ -139,6 +139,8 @@ module.exports = function(app) {
             newthread.title = thread.title;
             newthread.forum = thread.forum;
             newthread.op = post._id;
+            newthread.crtBy = req.user.id;
+            newthread.crtOn = Date.now();
             newthread.save(function(err, thread) {
                 if (err) {
                     logger.error(err);

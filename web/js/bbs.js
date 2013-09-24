@@ -452,28 +452,29 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
         configure :function(){
         },
         clickAddThread: function(){
-           $("#addTreadPanel").show();
+           this.$el.find("#addTreadPanel").show();
 
         },
         clickCloseThread: function(){
-           $("#addTreadPanel").hide();
+            this.$el.find("#addTreadPanel").hide();
         },
         saveThread: function(){
-            var threadTitle = $('#title').val();
-            var postContent = $('#content').val();
-            var forumID = $('#forumID').val();
+            var threadTitle = this.$el.find('#title').val();
+            var postContent = this.$el.find('#content').val();
+            var forumID = this.$el.find('#forumID').val();
+//            alert(threadTitle);
             var originPost = new Post({content: postContent});
             var thread = new Thread({title: threadTitle, forum: forumID, op: originPost});
+            var me = this;
             thread.save({}, {
                 success: function (model) {
                     console.log("save thread successfully.");
+                    me.$el.find("#addTreadPanel").hide();
                 },
                 error : function(){
                     console.log('Fail to save thread ');
-
                 }
             });
-            $("#addTreadPanel").hide();
         }
     });
     return BBS;
