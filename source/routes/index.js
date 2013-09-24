@@ -86,8 +86,6 @@ module.exports = function(app) {
 
     app.put('/forum/:id', function(req, res){
         var updateforum = JSON.parse(JSON.stringify(req.body));
-//        logger.debug('*****'+JSON.stringify(forum));
-//        logger.debug('*****' + updateforum._id);
         Forum.findOne({'_id': updateforum._id}, function(err, oldForum) {
             if (err) {
                 logger.error(err);
@@ -121,7 +119,18 @@ module.exports = function(app) {
             res.json(200, docs);
         })
     });
+    app.delete('/thread/:id', function(req, res) {
+        Thread.remove({'_id': req.params.id}, function(err) {
+            if (err) {
+                logger.error(err);
+                res.json(500, err);
+                return;
+            }
+            logger.debug('Deleted thread: ' + req.params.id);
+            res.json(200, {'_id': req.params.id});
+        })
 
+    });
     app.post('/thread', function(req, res){
         var thread = JSON.parse(JSON.stringify(req.body));
         var originPost = new Post();
@@ -138,6 +147,8 @@ module.exports = function(app) {
             newthread._id = idGen('Thread');
             newthread.title = thread.title;
             newthread.forum = thread.forum;
+            newthread.crtBy = req.user.id;
+            newthread.crtOn = Date.now();
             newthread.op = post._id;
             newthread.save(function(err, thread) {
                 if (err) {

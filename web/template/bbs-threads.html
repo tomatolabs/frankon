@@ -10,16 +10,16 @@
 </div>
 <ul>
     <% _.each(input, function(item, index) { %>
-    <li class="forum">
-        <a href="/forum/<%=item._id%>">
+    <li class="thread">
+        <a href="/thread/<%=item._id%>">
             <h4 data-placement="bottom" data-toggle="tooltip" title="" data-original-title="<%=item.title%>"><%=item.title%></h4>
         </a>
         <ul class="inline text-center">
             <li><i class="icon-user"> <%=item.crtBy%></i></li>
             <li>&nbsp;&nbsp;</li>
-            <li><a href="/forum/<%=item._id%>" class="oper-del" name="<%=item._id%>">删除</a></li>
+            <li><a href="/thread/<%=item._id%>" class="oper-del" id="<%=item._id%>" name="<%=item.crtBy%>">删除</a></li>
             <li>&nbsp;</li>
-            <li><a href="javascript:;" class="oper-mod" name="<%=item._id%>">编辑</a></li>
+            <li><a href="javascript:;" class="oper-mod" id="<%=item._id%>" name="<%=item.crtBy%>">编辑</a></li>
         </ul>
         <hr>
     </li>

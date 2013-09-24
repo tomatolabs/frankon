@@ -447,9 +447,20 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
         events: {
             'mouseup #addThreadBtn': 'clickAddThread',
             'mouseup #closeThreadbtn': 'clickCloseThread',
-            'mouseup #saveThreadBtn': 'saveThread'
+            'mouseup #saveThreadBtn': 'saveThread',
+            'mouseup .oper-del': 'delThread'
         },
         configure :function(){
+            var me = this;
+            this.listenTo(this.model,'add',function(model, res, options){
+                me.doRender();
+            }),
+                this.listenTo(this.model,'destroy',function(model, res, options){
+                    me.doRender();
+                }),
+                this.listenTo(this.model,'change',function(model, res, options){
+                    me.doRender();
+                })
         },
         clickAddThread: function(){
            $("#addTreadPanel").show();
@@ -474,7 +485,22 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
                 }
             });
             $("#addTreadPanel").hide();
+        },
+        delThread: function(e){
+            var id = this.$el.find(e.target).prop('id');
+            var crtBy = this.$el.find(e.target).prop('name');
+            var delModel = this.model.get(id);
+            var ownedPosts = delModel.get('posts');
+            if(ownedPosts==""){
+                if(confirm('确认删除？')){
+                delModel.destroy();
+                this.model.remove(delModel);
+               }
+            }else{
+                alert("该Thread有posts,不能删除！");
+            }
         }
+
     });
     return BBS;
 });
