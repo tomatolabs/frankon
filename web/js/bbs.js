@@ -462,27 +462,15 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
             var threadTitle = $('#title').val();
             var postContent = $('#content').val();
             var forumID = $('#forumID').val();
-            var post = new Post({content: postContent});
-            var me = this;
-            post.save({}, {
+            var originPost = new Post({content: postContent});
+            var thread = new Thread({title: threadTitle, forum: forumID, op: originPost});
+            thread.save({}, {
                 success: function (model) {
-                    console.log("save origin post successfully.");
-                    var thread = new Thread({title: threadTitle, forum: forumID, op: model.get('_id')});
-//                    console.log(JSON.stringify(thread));
-//                    thread.save();
-                    thread.save({}, {
-                        success: function(model){
-//                            console.log(JSON.stringify(me.model));
-                            console.log(JSON.stringify(model));
-                            console.log("save thread successfully.");
-                        },
-                        error: function(model){
-                            console.log('Fail to save thread ');
-                        }
-                    });
+                    console.log("save thread successfully.");
                 },
                 error : function(){
-                    console.log('Fail to save origin post ');
+                    console.log('Fail to save thread ');
+
                 }
             });
             $("#addTreadPanel").hide();

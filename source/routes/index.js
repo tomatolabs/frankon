@@ -124,49 +124,59 @@ module.exports = function(app) {
 
     app.post('/thread', function(req, res){
         var thread = JSON.parse(JSON.stringify(req.body));
-        logger.debug('*****'+JSON.stringify(thread));
-        var newthread = new Thread();
-        newthread._id = idGen('Thread');
-        newthread.title = thread.title;
-        newthread.forum = thread.forum;
-        newthread.op = 0;
-        newthread.save(function(err, thread) {
-            if (err) {
-                logger.error(err);
-                res.json(500, err);
-                return;
-            }
-            var forumID = thread.forum;
-            Forum.update({'_id': forumID}, {'$push':{'threads': thread._id}}, function(err){
-                if(err){
-                    logger.errror(err);
+        var originPost = new Post();
+        originPost._id = idGen('Post');
+        originPost.content = thread.op.content;
+        originPost.save(function(err, post){
+             if (err) {
+                 logger.error(err);
+                 res.json(500, err);
+                 return;
+             }
+
+            var newthread = new Thread();
+            newthread._id = idGen('Thread');
+            newthread.title = thread.title;
+            newthread.forum = thread.forum;
+            newthread.op = post._id;
+            newthread.save(function(err, thread) {
+                if (err) {
+                    logger.error(err);
                     res.json(500, err);
                     return;
                 }
-                logger.debug('add thread from Forum: ' + thread._id);
+                var forumID = thread.forum;
+                Forum.update({'_id': forumID}, {'$push':{'threads': thread._id}}, function(err){
+                    if(err){
+                        logger.errror(err);
+                        res.json(500, err);
+                        return;
+                    }
+                    logger.debug('add thread from Forum: ' + thread._id);
 
+                });
+                logger.debug('Created thread: ' + thread._id);
+                logger.debug(thread);
+                res.json(200, thread);
             });
-            logger.debug('Created thread: ' + thread._id);
-            logger.debug(thread);
-            res.json(200, thread);
-        });
+            logger.debug('Created origin post: ' + post._id);
+         });
     });
 
-    app.post('/post', function(req, res){
-        var post = JSON.parse(JSON.stringify(req.body));
-//        logger.debug('*****'+JSON.stringify(post));
-        var newpost = new Post();
-        newpost._id = idGen('Post');
-        newpost.content = post.content;
-        newpost.save(function(err, post) {
-            if (err) {
-                logger.error(err);
-                res.json(500, err);
-                return;
-            }
-            logger.debug('Created post: ' + post._id);
-            logger.debug(post);
-            res.json(200, post);
-        });
-    });
+//    app.post('/post', function(req, res){
+//        var post = JSON.parse(JSON.stringify(req.body));
+//        var newpost = new Post();
+//        newpost._id = idGen('Post');
+//        newpost.content = post.content;
+//        newpost.save(function(err, post) {
+//            if (err) {
+//                logger.error(err);
+//                res.json(500, err);
+//                return;
+//            }
+//            logger.debug('Created post: ' + post._id);
+//            logger.debug(post);
+//            res.json(200, post);
+//        });
+//    });
 };
