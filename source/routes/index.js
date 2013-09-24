@@ -112,7 +112,7 @@ module.exports = function(app) {
 
     app.get('/threads', function(req, res) {
         var id = req.query.forumId;
-        Forum.find({forum: id}).sort({'updOn': -1}).limit(100).exec(function(err, docs) {
+        Thread.find({forum: id}).sort({'updOn': -1}).limit(100).exec(function(err, docs) {
             if (err) {
                 logger.error(err);
                 res.json(500, err);

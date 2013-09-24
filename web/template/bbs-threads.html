@@ -8,6 +8,23 @@
         </ul>
     </div>
 </div>
+<ul>
+    <% _.each(input, function(item, index) { %>
+    <li class="forum">
+        <a href="/forum/<%=item._id%>">
+            <h4 data-placement="bottom" data-toggle="tooltip" title="" data-original-title="<%=item.title%>"><%=item.title%></h4>
+        </a>
+        <ul class="inline text-center">
+            <li><i class="icon-user"> <%=item.crtBy%></i></li>
+            <li>&nbsp;&nbsp;</li>
+            <li><a href="/forum/<%=item._id%>" class="oper-del" name="<%=item._id%>">删除</a></li>
+            <li>&nbsp;</li>
+            <li><a href="javascript:;" class="oper-mod" name="<%=item._id%>">编辑</a></li>
+        </ul>
+        <hr>
+    </li>
+    <% }); %>
+</ul>
 <div id="addTreadPanel" class="row-fluid hide">
     <div class="span9 container-fluid panel">
         <div class="row-fluid">
