@@ -1,7 +1,7 @@
 define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
     var BBS = spa.extend({
         routes: {
-            "forum/:id": "forum",
+            "forum-:id": "forum",
             "bbs-forums": "bbsForums",
             "bbsm-forums": "bbsmForums",
             //"*view(/:id)": "switchView", //   /bbs
@@ -81,6 +81,7 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
             this.ensureModelFetched('bbs', 'forums', showView);
         },
         forum: function(id){
+            this.switchView('bbs');
             var me = this;
             var model = this.models['bbs'].threads;
             model.fetch({
@@ -90,9 +91,8 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
                     me.ensureBbsForumView().doRender();
                     me.ensureBbsMainView('bbs').toThreadList();
                     $('#forumID').val(id);
-//                    console.log(id);
                 },
-                failure: function(o){
+                error: function(o){
                     console.error('failure: '+o);
                 }
             });
@@ -211,7 +211,7 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
             _.each(this.children, function(v, id){
                 v.hide();
             });
-            //alert(view.model.fetched);
+//            alert(view.model.fetched);
             view.doRender();
             view.show();
         },
@@ -316,27 +316,27 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
             })
         },
         blurForumName:function(e){
-            if($(e.target).val().trim()==''){
-                $('#forumName').addClass('error');
-                $('#nameError').html('论坛名称不能为空！');
+            if(this.$el.find(e.target).val().trim()==''){
+                this.$el.find('#forumName').addClass('error');
+                this.$el.find('#nameError').html('论坛名称不能为空！');
             };
         },
         blurForumDesc:function(e){
-            if($(e.target).val().trim()==''){
-                $('#forumDesc').addClass('error');
-                $('#descError').html('论坛描述不能为空！');
+            if(this.$el.find(e.target).val().trim()==''){
+                this.$el.find('#forumDesc').addClass('error');
+                this.$el.find('#descError').html('论坛描述不能为空！');
             };
         },
         focusOnForumName:function(e){
-            $('#forumName').removeClass('error');
-            $('#nameError').html(null);
+            this.$el.find('#forumName').removeClass('error');
+            this.$el.find('#nameError').html(null);
         },
         focusOnForumDesc:function(e){
-            $('#forumDesc').removeClass('error');
-            $('#descError').html(null);
+            this.$el.find('#forumDesc').removeClass('error');
+            this.$el.find('#descError').html(null);
         },
         clickDelForum:function(e){
-            var id = $(e.target).prop('name');
+            var id = this.$el.find(e.target).prop('name');
             var delModel = this.model.get(id);
             if(confirm('确认删除？')){
                 delModel.destroy();
@@ -344,19 +344,19 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
             }
         },
         clickAddForum: function(e){
-            var btn = $('#addForumBtn');
+            var btn = this.$el.find('#addForumBtn');
             if(btn.prop('disabled')){
                 btn.prop('disabled', false);
             }
             else{
-                var panel = $('#addForumPanel');
+                var panel = this.$el.find('#addForumPanel');
                 panel.show();
                 btn.prop('disabled', true);
             }
         },
         clickSaveForum: function(e){
-            var new_name = $('#name').val();
-            var new_desc = $('#desc').val();
+            var new_name = this.$el.find('#name').val();
+            var new_desc = this.$el.find('#desc').val();
             var newforum = new Forum({name: new_name,desc: new_desc});
             var me = this;
             newforum.save({}, {
@@ -364,8 +364,8 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
                     console.log("save forum successfully.");
                     console.log(JSON.stringify(me.model));
                     me.model.add(model);
-                    $('#addForumBtn').prop('disabled', false);
-                    var panel = $('#addForumPanel');
+                    me.$el.find('#addForumBtn').prop('disabled', false);
+                    var panel = me.$el.find('#addForumPanel');
                     panel.hide();
                 },
                 error : function(){
@@ -374,23 +374,23 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
             });
         },
         clickCloseAddForum: function(e){
-            $('#addForumBtn').prop('disabled', false);
+            this.$el.find('#addForumBtn').prop('disabled', false);
             var panel = $('#addForumPanel');
             panel.hide();
         },
         clickUpdateForum: function(e){
-            var update_name = $('#name_mod').val();
-            var update_desc = $('#desc_mod').val();
-            var _id = $('#forum_id').val();
+            var update_name = this.$el.find('#name_mod').val();
+            var update_desc = this.$el.find('#desc_mod').val();
+            var _id = this.$el.find('#forum_id').val();
             var updateModel = this.model.get(_id);
             updateModel.set('name', update_name);
             updateModel.set('desc', update_desc);
-            console.log(JSON.stringify(updateModel));
+            var me  = this;
             updateModel.save({},{
                 success: function (model) {
                     console.log("update forum successfully.");
-                    $('#updateForumBtn').prop('disabled', false);
-                    var panel = $('#modifyForumPanel');
+                    me.$el.find('#updateForumBtn').prop('disabled', false);
+                    var panel = me.$el.find('#modifyForumPanel');
                     panel.hide();
                 },
                 error : function(){
@@ -399,20 +399,20 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
             });
         },
         clickModForum:function(e){
-            var offset = $(e.target).offset();
-            $('#modifyForumPanel').show();
-            $('#modifyForumPanel').css("position","absolute");
-            $('#modifyForumPanel').css("top",offset.top - 15);
-            $('#modifyForumPanel').css("left",offset.left + 45);
-            var id = $(e.target).attr('name');
+            var offset = this.$el.find(e.target).offset();
+            this.$el.find('#modifyForumPanel').show();
+            this.$el.find('#modifyForumPanel').css("position","absolute");
+            this.$el.find('#modifyForumPanel').css("top",offset.top - 15);
+            this.$el.find('#modifyForumPanel').css("left",offset.left + 45);
+            var id = this.$el.find(e.target).attr('name');
             var oldModel = this.model.get(id);
-            $('#name_mod').val(oldModel.get('name'));
-            $('#desc_mod').val(oldModel.get('desc'));
-            $('#forum_id').val(id);
+            this.$el.find('#name_mod').val(oldModel.get('name'));
+            this.$el.find('#desc_mod').val(oldModel.get('desc'));
+            this.$el.find('#forum_id').val(id);
         },
         clickCloseModifyForum: function(e){
-            $('#updateForumBtn').prop('disabled', false);
-            var panel = $('#modifyForumPanel');
+            this.$el.find('#updateForumBtn').prop('disabled', false);
+            var panel = this.$el.find('#modifyForumPanel');
             panel.hide();
         }
     });
@@ -455,36 +455,38 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
             this.listenTo(this.model,'add',function(model, res, options){
                 me.doRender();
             }),
-                this.listenTo(this.model,'destroy',function(model, res, options){
-                    me.doRender();
-                }),
-                this.listenTo(this.model,'change',function(model, res, options){
-                    me.doRender();
-                })
+            this.listenTo(this.model,'destroy',function(model, res, options){
+                me.doRender();
+            }),
+            this.listenTo(this.model,'change',function(model, res, options){
+                me.doRender();
+             })
         },
         clickAddThread: function(){
-           $("#addTreadPanel").show();
+            this.$el.find("#addTreadPanel").show();
 
         },
         clickCloseThread: function(){
-           $("#addTreadPanel").hide();
+            this.$el.find("#addTreadPanel").hide();
         },
         saveThread: function(){
-            var threadTitle = $('#title').val();
-            var postContent = $('#content').val();
-            var forumID = $('#forumID').val();
+            var threadTitle = this.$el.find('#title').val();
+            var postContent = this.$el.find('#content').val();
             var originPost = new Post({content: postContent});
-            var thread = new Thread({title: threadTitle, forum: forumID, op: originPost});
+            var thread = new Thread({title: threadTitle, op: originPost});
+            var me = this;
             thread.save({}, {
                 success: function (model) {
                     console.log("save thread successfully.");
+//                    console.log(JSON.stringify(me.model));
+                    me.model.add(model);
+                    me.$el.find("#addTreadPanel").hide();
                 },
                 error : function(){
                     console.log('Fail to save thread ');
 
                 }
             });
-            $("#addTreadPanel").hide();
         },
         delThread: function(e){
             var id = this.$el.find(e.target).prop('id');

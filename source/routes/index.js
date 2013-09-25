@@ -5,6 +5,7 @@ var Forum = require('../models/Forum').model;
 var Thread = require('../models/Thread').model;
 var Post = require('../models/Post').model;
 var idGen = require('../../lib/id');
+
 module.exports = function(app) {
     app.get('/', function(req, res) {
         var input = {};
@@ -36,6 +37,12 @@ module.exports = function(app) {
         util.apply(input, req.asset || {});
         res.render('index', input);
     });
+    app.get('/forum-:id', function(req, res) {
+        var input = {};
+        util.apply(input, req.asset || {});
+        logger.debug('***********' + JSON.stringify(input));
+        res.render('index', input);
+    });
 
     app.delete('/forum/:id', function(req, res) {
         Forum.remove({'_id': req.params.id}, function(err) {
@@ -47,7 +54,6 @@ module.exports = function(app) {
             logger.debug('Deleted forum: ' + req.params.id);
             res.json(200, {'_id': req.params.id});
         })
-
     });
     app.get('/forums', function(req, res) {
 
@@ -86,6 +92,8 @@ module.exports = function(app) {
 
     app.put('/forum/:id', function(req, res){
         var updateforum = JSON.parse(JSON.stringify(req.body));
+//        logger.debug('*****'+JSON.stringify(forum));
+//        logger.debug('*****' + updateforum._id);
         Forum.findOne({'_id': updateforum._id}, function(err, oldForum) {
             if (err) {
                 logger.error(err);
@@ -118,6 +126,7 @@ module.exports = function(app) {
             }
             res.json(200, docs);
         })
+        res.cookie('forumID', id);
     });
     app.delete('/thread/:id', function(req, res) {
         Thread.remove({'_id': req.params.id}, function(err) {
@@ -137,16 +146,16 @@ module.exports = function(app) {
         originPost._id = idGen('Post');
         originPost.content = thread.op.content;
         originPost.save(function(err, post){
-             if (err) {
-                 logger.error(err);
-                 res.json(500, err);
-                 return;
-             }
+            if (err) {
+                logger.error(err);
+                res.json(500, err);
+                return;
+            }
 
             var newthread = new Thread();
             newthread._id = idGen('Thread');
             newthread.title = thread.title;
-            newthread.forum = thread.forum;
+            newthread.forum = req.cookies.forumID;
             newthread.crtBy = req.user.id;
             newthread.crtOn = Date.now();
             newthread.op = post._id;
@@ -171,7 +180,7 @@ module.exports = function(app) {
                 res.json(200, thread);
             });
             logger.debug('Created origin post: ' + post._id);
-         });
+        });
     });
 
 //    app.post('/post', function(req, res){
