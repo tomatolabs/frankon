@@ -463,12 +463,8 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
              })
         },
         clickAddThread: function(){
-<<<<<<< HEAD
-           this.$el.find("#addTreadPanel").show();
-=======
-            this.$el.find("#addTreadPanel").show();
->>>>>>> master
 
+            this.$el.find("#addTreadPanel").show();
         },
         clickCloseThread: function(){
             this.$el.find("#addTreadPanel").hide();
@@ -476,32 +472,23 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
         saveThread: function(){
             var threadTitle = this.$el.find('#title').val();
             var postContent = this.$el.find('#content').val();
-<<<<<<< HEAD
             var forumID = this.$el.find('#forumID').val();
 //            alert(threadTitle);
             var originPost = new Post({content: postContent});
             var thread = new Thread({title: threadTitle, forum: forumID, op: originPost});
-=======
             var originPost = new Post({content: postContent});
             var thread = new Thread({title: threadTitle, op: originPost});
->>>>>>> master
             var me = this;
             thread.save({}, {
                 success: function (model) {
                     console.log("save thread successfully.");
-<<<<<<< HEAD
-=======
-//                    console.log(JSON.stringify(me.model));
                     me.model.add(model);
->>>>>>> master
                     me.$el.find("#addTreadPanel").hide();
                 },
                 error : function(){
                     console.log('Fail to save thread ');
                 }
             });
-<<<<<<< HEAD
-=======
         },
         delThread: function(e){
             var id = this.$el.find(e.target).prop('id');
@@ -516,7 +503,6 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
             }else{
                 alert("该Thread有posts,不能删除！");
             }
->>>>>>> master
         }
 
     });
