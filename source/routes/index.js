@@ -37,6 +37,12 @@ module.exports = function(app) {
         util.apply(input, req.asset || {});
         res.render('index', input);
     });
+    app.get('/forum-:id', function(req, res) {
+        var input = {};
+        util.apply(input, req.asset || {});
+        logger.debug('***********' + JSON.stringify(input));
+        res.render('index', input);
+    });
 
     app.delete('/forum/:id', function(req, res) {
         Forum.remove({'_id': req.params.id}, function(err) {
@@ -112,7 +118,7 @@ module.exports = function(app) {
 
     app.get('/threads', function(req, res) {
         var id = req.query.forumId;
-        Forum.find({forum: id}).sort({'updOn': -1}).limit(100).exec(function(err, docs) {
+        Thread.find({forum: id}).sort({'updOn': -1}).limit(100).exec(function(err, docs) {
             if (err) {
                 logger.error(err);
                 res.json(500, err);
@@ -120,24 +126,38 @@ module.exports = function(app) {
             }
             res.json(200, docs);
         })
+        res.cookie('forumID', id);
     });
+    app.delete('/thread/:id', function(req, res) {
+        Thread.remove({'_id': req.params.id}, function(err) {
+            if (err) {
+                logger.error(err);
+                res.json(500, err);
+                return;
+            }
+            logger.debug('Deleted thread: ' + req.params.id);
+            res.json(200, {'_id': req.params.id});
+        })
 
+    });
     app.post('/thread', function(req, res){
         var thread = JSON.parse(JSON.stringify(req.body));
         var originPost = new Post();
         originPost._id = idGen('Post');
         originPost.content = thread.op.content;
         originPost.save(function(err, post){
-             if (err) {
-                 logger.error(err);
-                 res.json(500, err);
-                 return;
-             }
+            if (err) {
+                logger.error(err);
+                res.json(500, err);
+                return;
+            }
 
             var newthread = new Thread();
             newthread._id = idGen('Thread');
             newthread.title = thread.title;
-            newthread.forum = thread.forum;
+            newthread.forum = req.cookies.forumID;
+            newthread.crtBy = req.user.id;
+            newthread.crtOn = Date.now();
             newthread.op = post._id;
             newthread.crtBy = req.user.id;
             newthread.crtOn = Date.now();
@@ -162,7 +182,7 @@ module.exports = function(app) {
                 res.json(200, thread);
             });
             logger.debug('Created origin post: ' + post._id);
-         });
+        });
     });
 
 //    app.post('/post', function(req, res){

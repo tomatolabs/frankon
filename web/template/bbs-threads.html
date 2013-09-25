@@ -1,13 +1,30 @@
 <div class="navbar">
     <div class="navbar-inner">
         <ul class="nav">
-            <li class=""><a href="#">返回</a></li>
+            <li class=""><a href="bbs">返回</a></li>
         </ul>
         <ul class="nav pull-right">
             <li class=""><a href="javascript:;" id="addThreadBtn">新建</a></li>
         </ul>
     </div>
 </div>
+<ul>
+    <% _.each(input, function(item, index) { %>
+    <li class="thread">
+        <a href="/thread/<%=item._id%>">
+            <h4 data-placement="bottom" data-toggle="tooltip" title="" data-original-title="<%=item.title%>"><%=item.title%></h4>
+        </a>
+        <ul class="inline text-center">
+            <li><i class="icon-user"> <%=item.crtBy%></i></li>
+            <li>&nbsp;&nbsp;</li>
+            <li><a href="/thread/<%=item._id%>" class="oper-del" id="<%=item._id%>" name="<%=item.crtBy%>">删除</a></li>
+            <li>&nbsp;</li>
+            <li><a href="javascript:;" class="oper-mod" id="<%=item._id%>" name="<%=item.crtBy%>">编辑</a></li>
+        </ul>
+        <hr>
+    </li>
+    <% }); %>
+</ul>
 <div id="addTreadPanel" class="row-fluid hide">
     <div class="span9 container-fluid panel">
         <div class="row-fluid">
