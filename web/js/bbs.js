@@ -233,13 +233,13 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
             });
             this.addChild(this.threadListView);
 
-            this.postListView = new PostListView({
-                vid: 'bbs-posts',
-                spa: this.spa,
-                prerendered: true,
-                model: this.model.posts
-            });
-            this.addChild(this.postListView);
+//            this.postListView = new PostListView({
+//                vid: 'bbs-posts',
+//                spa: this.spa,
+//                prerendered: true,
+//                model: this.model.posts
+//            });
+//            this.addChild(this.postListView);
         },
         afterRender: function(){
         },
