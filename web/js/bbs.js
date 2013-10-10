@@ -2,6 +2,7 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
     var BBS = spa.extend({
         routes: {
             "forum-:id": "forum",
+            "thread-:id": "thread",
             "bbs-forums": "bbsForums",
             "bbsm-forums": "bbsmForums",
             //"*view(/:id)": "switchView", //   /bbs
@@ -14,7 +15,8 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
         configure: function(){
             this.models['bbs'] = {
                 forums: null,
-                threads: null
+                threads: null,
+                posts:null
             };
 
             /*
@@ -38,6 +40,9 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
              */
             var threadList = new ThreadList({});
             this.models['bbs'].threads = threadList;
+
+            var postList = new PostList({});
+            this.models['bbs'].posts = postList;
 
             this.models['bbsm'] = {forums: null };
             this.models['bbsm'].forums = forumTopList;
@@ -90,7 +95,22 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
                     model.fetched = true;
                     me.ensureBbsForumView().doRender();
                     me.ensureBbsMainView('bbs').toThreadList();
-                    $('#forumID').val(id);
+                },
+                error: function(o){
+                    console.error('failure: '+o);
+                }
+            });
+        },
+        thread: function(id){
+            this.switchView('bbs');
+            var me = this;
+            var model = this.models['bbs'].posts;
+            model.fetch({
+                data: {threadId: id},
+                success: function(o){
+                    model.fetched = true;
+                    me.ensureBbsThreadView().doRender();
+                    me.ensureBbsMainView('bbs').toPostList();
                 },
                 error: function(o){
                     console.error('failure: '+o);
@@ -104,6 +124,16 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
                 var model = this.models['bbs'].threads;
                 view = new ThreadListView({spa: this, model: model, modelDriven: true});
                 bbsMainView.threadListView = view;
+            }
+            return view;
+        },
+        ensureBbsThreadView: function(){
+            var bbsMainView = this.ensureBbsMainView('bbs');
+            var view = bbsMainView.postListView;
+            if(!view){
+                var model = this.models['bbs'].posts;
+                view = new PostListView({spa: this, model: model, modelDriven: true});
+                bbsMainView.postListView = view;
             }
             return view;
         },
@@ -202,6 +232,14 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
                 model: this.model.threads
             });
             this.addChild(this.threadListView);
+
+            this.postListView = new PostListView({
+                vid: 'bbs-posts',
+                spa: this.spa,
+                prerendered: true,
+                model: this.model.posts
+            });
+            this.addChild(this.postListView);
         },
         afterRender: function(){
         },
@@ -219,6 +257,9 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
             this.switchView(this.forumListView);
         },
         toThreadList: function(){
+            this.switchView(this.threadListView);
+        },
+        toPostList: function(){
             this.switchView(this.threadListView);
         }
     });
@@ -442,13 +483,20 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
         }
     });
 
+    var PostList = spa.Collection.extend({
+        model: Post ,
+        url: '/posts'
+    });
     var ThreadListView = spa.View.extend({
         templateName: 'bbs-threads',
         events: {
             'mouseup #addThreadBtn': 'clickAddThread',
             'mouseup #closeThreadbtn': 'clickCloseThread',
             'mouseup #saveThreadBtn': 'saveThread',
-            'mouseup .oper-del': 'delThread'
+            'mouseup .oper-del': 'delThread',
+            'mouseup .oper-mod': 'modThread',
+            'mouseup .oper-saveChange': 'saveChange',
+            'mouseup .oper-cancelChange': 'cancelChange'
         },
         configure :function(){
             var me = this;
@@ -469,13 +517,61 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
         clickCloseThread: function(){
             this.$el.find("#addTreadPanel").hide();
         },
+        modThread: function(e){
+            var id = this.$el.find(e.target).closest('ul').prop('id');
+            this.$el.find("#display"+id).hide();
+            this.$el.find("#editable"+id).show();
+            var delButton = this.$el.find(e.target).closest('ul').find('li').eq(2);
+            var saveChangeButton = this.$el.find(e.target).closest('ul').find('li').eq(3);
+            var editButton = this.$el.find(e.target).closest('ul').find('li').eq(5);
+            var cancelChangeButton = this.$el.find(e.target).closest('ul').find('li').eq(6);
+            delButton.hide();
+            saveChangeButton.show();
+            editButton.hide();
+            cancelChangeButton.show();
+        },
+        saveChange: function(e){
+            var id = this.$el.find(e.target).closest('ul').prop('id');
+            var changedTitle = this.$el.find("#editable"+id).val();
+            var oldModel = this.model.get(id);
+            oldModel.set('title', changedTitle);
+            var me  = this;
+            oldModel.save(null,{
+                success: function (model) {
+                    console.log("update Thread successfully.");
+                    me.$el.find("#display"+id).show();
+                    me.$el.find("#editable"+id).hide();
+                    var delButton = me.$el.find(e.target).closest('ul').find('li').eq(2);
+                    var saveChangeButton = me.$el.find(e.target).closest('ul').find('li').eq(3);
+                    var editButton = me.$el.find(e.target).closest('ul').find('li').eq(5);
+                    var cancelChangeButton = me.$el.find(e.target).closest('ul').find('li').eq(6);
+                    delButton.show();
+                    saveChangeButton.hide();
+                    editButton.show();
+                    cancelChangeButton.hide();
+                },
+                error : function(){
+                    console.log('Fail to update forum ');
+                }
+            });
+
+        },
+        cancelChange: function(e){
+            var id = this.$el.find(e.target).closest('ul').prop('id');
+            this.$el.find("#display"+id).show();
+            this.$el.find("#editable"+id).hide();
+            var delButton = this.$el.find(e.target).closest('ul').find('li').eq(2);
+            var saveChangeButton = this.$el.find(e.target).closest('ul').find('li').eq(3);
+            var editButton = this.$el.find(e.target).closest('ul').find('li').eq(5);
+            var cancelChangeButton = this.$el.find(e.target).closest('ul').find('li').eq(6);
+            delButton.show();
+            saveChangeButton.hide();
+            editButton.show();
+            cancelChangeButton.hide();
+        },
         saveThread: function(){
             var threadTitle = this.$el.find('#title').val();
             var postContent = this.$el.find('#content').val();
-            var forumID = this.$el.find('#forumID').val();
-//            alert(threadTitle);
-            var originPost = new Post({content: postContent});
-            var thread = new Thread({title: threadTitle, forum: forumID, op: originPost});
             var originPost = new Post({content: postContent});
             var thread = new Thread({title: threadTitle, op: originPost});
             var me = this;
@@ -491,8 +587,8 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
             });
         },
         delThread: function(e){
-            var id = this.$el.find(e.target).prop('id');
-            var crtBy = this.$el.find(e.target).prop('name');
+            var id = this.$el.find(e.target).closest('ul').prop('id');
+            var crtBy = this.$el.find(e.target).closest('ul').find('li').eq(2).prop('name');
             var delModel = this.model.get(id);
             var ownedPosts = delModel.get('posts');
             if(ownedPosts==""){
@@ -503,6 +599,13 @@ define(['Spa', 'jQuery', 'Underscore'], function(spa, $, _) {
             }else{
                 alert("该Thread有posts,不能删除！");
             }
+        }
+
+    });
+    var PostListView = spa.View.extend({
+        templateName: 'bbs-posts',
+        events: {
+
         }
 
     });

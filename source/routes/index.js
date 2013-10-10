@@ -92,8 +92,6 @@ module.exports = function(app) {
 
     app.put('/forum/:id', function(req, res){
         var updateforum = JSON.parse(JSON.stringify(req.body));
-//        logger.debug('*****'+JSON.stringify(forum));
-//        logger.debug('*****' + updateforum._id);
         Forum.findOne({'_id': updateforum._id}, function(err, oldForum) {
             if (err) {
                 logger.error(err);
@@ -102,7 +100,6 @@ module.exports = function(app) {
             }
             oldForum.name = updateforum.name;
             oldForum.desc = updateforum.desc;
-            logger.debug('*****'+JSON.stringify(oldForum));
             oldForum.save(function(err, forum){
                 if (err) {
                     logger.error(err);
@@ -184,7 +181,32 @@ module.exports = function(app) {
             logger.debug('Created origin post: ' + post._id);
         });
     });
+    app.put('/thread/:id', function(req, res){
+        var newThread = JSON.parse(JSON.stringify(req.body));
+        Thread.findOne({'_id': newThread._id}, function(err, oldThread) {
+            if (err) {
+                logger.error(err);
+                res.json(500, err);
+                return;
+            }
+            if(newThread.title==''){
+                res.json(200, oldThread);
+            }else{
+                oldThread.title = newThread.title;
+                oldThread.save(function(err, thread){
+                    if (err) {
+                        logger.error(err);
+                        res.json(500, err);
+                        return;
+                    }
+                    logger.debug('Updated thread: ' + thread._id);
+                    logger.debug(thread);
+                    res.json(200, thread);
+                });
+            }
 
+        });
+    });
 //    app.post('/post', function(req, res){
 //        var post = JSON.parse(JSON.stringify(req.body));
 //        var newpost = new Post();
